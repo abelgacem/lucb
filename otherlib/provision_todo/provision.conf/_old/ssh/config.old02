@@ -1,0 +1,46 @@
+
+#### Config For Ovh ######
+
+ Host o1*
+  HostName 51.210.10.195
+
+Host o2*
+  HostName 51.77.213.243
+
+Host o3*
+  HostName 92.222.22.21
+
+Host o*c
+  User centos
+Host o*u
+  User ubuntu
+Host o*m
+  User mxadmin
+
+Host o*
+  IdentityFile ~/.ssh/sshkeypriv/sshkeyovh
+  Port 22
+
+#################### Github
+Host githubpub
+  Preferredauthentications publickey
+  IdentityFile ~/.ssh/sshkeypriv/sshkeygithubpersonal
+  HostName github.com
+  User git
+
+
+
+Host *
+  StrictHostKeyChecking no
+  # To disable Msg >  @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+  UserKnownHostsFile /dev/null
+  # To disable Msg > Warning: Permanently added
+  LogLevel ERROR
+  # Speed > Connection
+  ## Share > Connection
+	ControlMaster auto
+	ControlPath  /tmp/mx-sockets-ssh-%r@%h-%p
+	ControlPersist 600  
+  ## Test/Understand
+  ServerAliveInterval 60
+  ServerAliveCountMAx 20

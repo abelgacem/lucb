@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [[ $* == *"--type container test-container"* ]]; then
+    echo '{"ContainerID": "mock-container-id"}'
+elif [[ $* == *"--type container"* ]]; then
+    exit 1
+else
+    echo "Unexpected command: $*" >&2
+    exit 2
+fi
+
+
+

@@ -1,0 +1,9 @@
+
+# Provision > File.Local > to > Vm.Remote
+
+## Provision > Github.Personal:Key.Priv
+## Allow > User > to > git:verb > to > Github
+/Users/max/Documents/NotInCloud/RepoDevops/sshkey/sshkeygithubpersonal   @ /tmp    @ /home/${gOsUser}/.ssh
+## Provision > Ovh:Vps:Key.Priv
+## Allow > User > to > ssh > to > Ovh:Vps.Remote
+/Users/max/Documents/NotInCloud/RepoDevops/sshkey/sshkeyovh              @ /tmp    @ /home/${gOsUser}/.ssh

@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"name": "provision",
+			"path": "../../provision"
+		},
+		{
+			"name": "code",
+			"path": "../../code"
+		},
+		{
+			"name": "conf",
+			"path": ".."
+		},
+		{
+			"name": "topic",
+			"path": "../../topic"
+		},
+		{
+			"name": "RepoDevops",
+			"path": "../../../../../../Users/max/Documents/NotInCloud/RepoDevops"
+		},
+		{
+			"path": "../../env"
+		}
+	],
+	"settings": {}
+}

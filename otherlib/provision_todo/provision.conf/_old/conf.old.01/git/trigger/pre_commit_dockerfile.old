@@ -1,0 +1,112 @@
+#!/bin/bash
+# Dependency  = file is triggered by Git.Hook
+# Input       = $(git status -s) from outside
+# Description = Deploy (in Env.Mac) file (Concerning Dockerfile)
+# Description = Copy file from 1 location to Another Location
+
+# Description = Function.Local.Auxiliary
+# Description = Deploy File at Destination if File exist in ListFileGitKnow
+# Description = Delete Deployed File from ListFileToManage
+
+function mx-prerequist {
+# Allow Bash.Lib.Visibility
+source ~/.bashrc
+}
+mx-prerequist
+
+
+
+function mx-copy-file {
+  RootFolder="/Users/Max/Documents/MxRoot/MacRepo"
+  FileSrcPath=$(grep "${FileInGitToDeploy}" <<< "${ListFile}")
+  [ ${FileSrcPath} ] && { 
+    # echo "Mx > Find Changes > ${FileFind} - Copy it toto ${FolderDest}/$(basename ${FileFind})"
+    # \cp overwrite the alias cp -i
+    Action="sudo cp -rf ${RootFolder}/omt/${FileSrcPath} ${FolderDest}/$(basename ${FileSrcPath})"
+    echo  $Action; 
+    $Action
+    Action="sudo chown -R Max:staff ${FolderDest}/$(basename ${FileSrcPath})"
+    echo  $Action; 
+    $Action
+    [ ${nbcopy} -eq 0 ] && ListFile=${ListFile/${FileSrcPath}}; 
+  }
+}
+
+function mx-generate-dockerfile {
+  DoMsg="Mx > Generate Docker.Dockerfile > $1"
+  DoAction="mx-docker-dockerfile-generate $1"
+  echo "$DoMsg > $DoAction"
+  $DoAction;
+  
+}
+
+# Bep : Get Parameter into Local Var
+ListFileGitKnow=$1
+
+# Define the Format to Manage
+# ListFile="${ListFileGitKnow}"
+ListFile=$(echo "${ListFileGitKnow}" | awk '{print $2}')
+#ListStatus=$(echo "${ListFileGitKnow}" | awk '{print $1}')
+ListFile1=$(echo "${ListFileGitKnow}" | awk 'BEGIN {printf("%40s %12s \n" ,"FileName", "Git.Status")} {printf("%40.40s %3.3s\n", $2, $1)}')
+
+# ############## For Debug
+#GIT_EXEC_PATH="$GIT_EXEC_PATH;/etc/profile.d/vm"
+#echo  "Mx > Git > EnvVar > ${GIT_EXEC_PATH}"
+#echo  "Mx > File Git Know Before Commit >  \n${ListFile1}\n\n"
+#RootFolder=$(mx-json-get-value Folder.Root)
+#echo  "Mx > RootFolder > ${RootFolder}"
+# ############## For Debug
+
+# For Debug
+echo -e "Mx > Pre-commit-dockerfile > File Git Know Before Commit >  \n${ListFile1}\n\n"
+
+##exit 0
+
+for FileToCommit in ${ListFile}; do
+  ###### Manage Docker.Dockerfile  & Docker.Image
+  FileInGitToDeploy="bash/lib/alias_lib.sh"          ;FolderDest="dockerfile/mxi-al01/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/mx_lib.sh"             ;FolderDest="dockerfile/mxi-al01/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/cat_lib.sh"            ;FolderDest="dockerfile/mxi-al01/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/folder_lib.sh"         ;FolderDest="dockerfile/mxi-al01/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/bash-lib.sh"           ;FolderDest="dockerfile/mxi-al01/res/profile"    nbcopy=1;mx-copy-file
+  FileInGitToDeploy="bash/lib/json-lib.sh"           ;FolderDest="dockerfile/mxi-al01/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/vm/ovh/vmvar.json"         ;FolderDest="dockerfile/mxi-al01/res"            nbcopy=0;mx-copy-file
+  
+  FileInGitToDeploy="bash/lib/folder_nginx_lib.sh"   ;FolderDest="dockerfile/mxi-alng/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/nginx_lib.sh"          ;FolderDest="dockerfile/mxi-alng/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/phpfpm_lib.sh"         ;FolderDest="dockerfile/mxi-alng/res/profile"    nbcopy=1;mx-copy-file
+
+  FileInGitToDeploy="bash/lib/folder_phpfpm_lib.sh"  ;FolderDest="dockerfile/mxi-alpf/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/folder_php_lib.sh"     ;FolderDest="dockerfile/mxi-alpf/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/phpfpm_lib.sh"         ;FolderDest="dockerfile/mxi-alpf/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/php_lib.sh"            ;FolderDest="dockerfile/mxi-alpf/res/profile"    nbcopy=0;mx-copy-file
+  
+  FileInGitToDeploy="bash/lib/maria_lib.sh"          ;FolderDest="dockerfile/mxi-almariadb/res/profile" nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/mysqlc_lib.sh"         ;FolderDest="dockerfile/mxi-almariadb/res/profile" nbcopy=1;mx-copy-file
+  FileInGitToDeploy="bash/lib/mysqlc_lib.sh"         ;FolderDest="dockerfile/mxi-altool/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/ansible_lib.sh"        ;FolderDest="dockerfile/mxi-altool/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/git_lib.sh"            ;FolderDest="dockerfile/mxi-altool/res/profile"    nbcopy=0;mx-copy-file
+  FileInGitToDeploy="bash/lib/folder_ansible_lib.sh" ;FolderDest="dockerfile/mxi-altool/res/profile"    nbcopy=0;mx-copy-file  
+  
+  FileInGitToDeploy="bash/lib/backup_lib.sh"         ;FolderDest="dockerfile/_repores/l1_albackup/profile"    nbcopy=0;mx-copy-file; #mx-generate-dockerfile albackup
+  FileInGitToDeploy="bash/lib/jenkins_lib.sh"        ;FolderDest="dockerfile/_repores/l2_aljavajen/profile"   nbcopy=0;mx-copy-file; #mx-generate-dockerfile aljavajen
+  FileInGitToDeploy="bash/lib/omt_lib.sh"            ;FolderDest="dockerfile/_repores/l2_alnginxomt/profile"  nbcopy=0;mx-copy-file; #mx-generate-dockerfile alnginxomt
+  FileInGitToDeploy="bash/lib/pma_lib.sh"            ;FolderDest="dockerfile/_repores/l2_alnginxpma/profile"  nbcopy=0;mx-copy-file; #mx-generate-dockerfile alnginxomt
+
+  FileInGitToDeploy="sql/lib/allow_host_lib"         ;FolderDest="dockerfile/mxi-almariadb/res/sql"     nbcopy=0;mx-copy-file  
+  FileInGitToDeploy="conf/ssh/config"                 ;FolderDest="dockerfile/mxi-altool/res/ssh"        nbcopy=0;mx-copy-file
+  FileInGitToDeploy="conf/ssh/id_rsa"                 ;FolderDest="dockerfile/mxi-altool/res/ssh"        nbcopy=0;mx-copy-file
+  FileInGitToDeploy="conf/ssh/id_rsa.pub"             ;FolderDest="dockerfile/mxi-altool/res/ssh"        nbcopy=0;mx-copy-file
+done
+
+##if file dockerfile/mxi-al00/dockerfile is updated => Recreate image al00, and all alXXX => this image = extra stable
+##if file dockerfile/mxi-al01/dockerfile is updated => Recreate image alXX00 
+
+
+
+### Bep: mx-copy-file is 1 Function.Local so unset it to allow file to be Invisible in Os.Env
+unset -f mx-copy-file
+unset -f mx-generate-dockerfile
+unset -f mx-debug
+unset -f mx-prerequist
+

@@ -1,0 +1,26 @@
+---
+- name:  Pb to test play
+  hosts: o2d
+  gather_facts: no
+  vars:
+    - timestamp: "{{ lookup('pipe','date +%Y-%m-%d') }}"
+  vars_files:
+    - var.yml
+  tasks:
+    - name: remove libcurl4
+      apt:
+        name: libcurl4
+        state: absent
+    - name: Install Lib needed by MongoDb:Community on Debian Buster
+      block:
+        - name: Download needed Jessie packages
+          get_url:
+            url: "{{ item.repo }}/{{ item.name }}"
+            dest: "/tmp/{{ item.name }}"
+          with_items: "{{ jessie_list_package }}"
+    - name: Install needed Jessie packages
+      apt:
+        deb: "/tmp/{{ item.name }}"
+        state: present
+      with_items: "{{ jessie_list_package }}"
+  

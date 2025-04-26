@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: provrolefile
+    vars:
+      file: /tmp/tempo

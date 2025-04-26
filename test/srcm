@@ -1,0 +1,81 @@
+#!/bin/bash
+
+
+
+# Base directory containing the scripts (that contains the methods to test)
+sFOLDER_PRJ="/home/ubuntu/wkspc/git/luc-bash"
+sFOLDER_LIB="${sFOLDER_PRJ}/src/lib"        # set of bash script. each contains the method to test
+sFOLDER_TEST="${sFOLDER_PRJ}/test"          # set of bash script. each contains the method to test
+sFOLDER_MOCK="${sFOLDER_PRJ}/test/mock"     # set of mocked CLI
+sFOLDER_HELPER="${sFOLDER_PRJ}/test/helper" # set of mocked CLI
+# PATH="${sFOLDER_LIB}:${sFOLDER_MOCK}:${sFOLDER_HELPER}:$PATH"
+PATH="${sFOLDER_LIB}:${sFOLDER_HELPER}:$PATH"
+
+# Purpose: expose 1 bats helper method in a specific folder/file
+# args: lSCRIPT_NAME
+function expose_bats_helper_method() {
+  local lFILE_NAME="$1"
+  local lFILE_FOLDER="${sFOLDER_HELPER}/$lFILE_NAME  
+  local lFILE_PATH="${lFILE_FOLDER}/load.bash"  
+  
+  [ -f "$lFILE_PATH ] && {
+    load "$lFILE_PATH
+  } || {
+    echo "Error: Cannot find the file: $lFILE_PATH >&2
+    exit 1
+  }
+}
+
+# Purpose: expose all bats helper method
+# args : NONE
+function expose_all_bats_helper_method() {
+  expose_bats_helper_method bats-support
+  expose_bats_helper_method bats-assert
+}
+
+# purpose: 
+# - expose all the method in a BASH script
+# - used to expose the method to test
+# - also used to expose the dependencies used by the method to test that can be in another script
+# args: lSCRIPT_RELPATH
+function expose_method() {
+  local lSCRIPT_RELPATH="$1"
+    
+  [ -f "${sFOLDER_LIB}/${lSCRIPT_RELPATH}" ] && {
+    source "${sFOLDER_LIB}/${lSCRIPT_RELPATH}"
+  } || {
+    echo "Error: Cannot find the script: ${sFOLDER_LIB}/${lSCRIPT_RELPATH}" >&2
+    exit 1
+  }
+}
+
+# purpose: 
+# - expose all the mocked method in a BASH script
+# - used to mock a method that is used by a tested method
+# args: lSCRIPT_RELPATH
+function expose_method_mock() {
+  local lSCRIPT_RELPATH="$1"
+    
+  [ -f "${sFOLDER_MOCK}/${lSCRIPT_RELPATH}" ] && {
+    source "${sFOLDER_MOCK}/${lSCRIPT_RELPATH}"
+  } || {
+    echo "Error: Cannot find the script: ${sFOLDER_MOCK}/${lSCRIPT_RELPATH}" >&2
+    exit 1
+  }
+}
+
+
+# purpose: display info for debug
+function display_debug_info() {
+  echo ""
+  echo "BATS_TEST_FILENAME=$BATS_TEST_FILENAME"
+  echo ""
+  echo "PATH=$PATH"
+}
+
+# description: BATS sdef function
+# purpose: called, after each failed test
+function teardown() {
+  display_debug_info
+}
+

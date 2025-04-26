@@ -1,0 +1,55 @@
+#!/bin/bash
+
+
+# Dependency  = File is triggered by Git.Hook
+# Input       = From Git.Hook > $(git status -s)
+# Description = Deploy (in Env.Mac) File (Concerning Profile)
+# Description = Copy File from 1 Location to Another Location
+
+# Description = Function.Local.Auxiliary
+# Description = Deploy File at Destination if File exist in ListFileGitKnow
+# Description = Delete Deployed File from ListFileToManage
+function mx-copy-file {
+  RootFolder="/Users/Max/Documents/MxRoot/MacRepo"
+  FileSrcPath=$(grep "${FileInGitToDeploy}" <<< "${ListFile}")
+  #echo FileSrcPath = $FileSrcPath
+  [ ${FileSrcPath} ] && { 
+    # echo "Mx > Find Changes > ${FileFind} - Copy it toto ${FolderDest}/$(basename ${FileFind})"
+    # \cp overwrite the alias cp -i
+    #Action="sudo cp -rf ${RootFolder}/omt/${FileSrcPath} ${FolderDest}/$(basename ${FileSrcPath})"
+    Action="sudo rsync --checksum --ignore-times ${RootFolder}/omt/${FileSrcPath} ${FolderDest}/"
+    echo  $Action;
+    $Action
+    ListFile=${ListFile/${FileSrcPath}}; 
+  }
+}
+
+# Bep : Get Parameter into Local Var
+ListFileGitKnow=$1
+
+# Define the Format to Manage
+# ListFile="${ListFileGitKnow}"
+ListFile=$(echo "${ListFileGitKnow}" | awk '{print $2}')
+#ListStatus=$(echo "${ListFileGitKnow}" | awk '{print $1}')
+ListFile1=$(echo "${ListFileGitKnow}" | awk 'BEGIN {printf("%40s %12s \n" ,"FileName", "Git.Status")} {printf("%45.45s %3.3s\n", $2, $1)}')
+
+# For Debug
+echo -e "Mx > Pre-commit-profile > File Git Know Before Commit >  \n${ListFile1}\n\n"
+##exit 0
+
+## Copy.Auto Git.Fille.Commit to Env.Local
+for FileToCommit in ${ListFile}; do
+  FileInGitToDeploy="env/mac/.bashrc";                   FolderDest="${HOME}"                  ; mx-copy-file
+  FileInGitToDeploy="env/mac/.bash_profile";             FolderDest="${HOME}"                  ; mx-copy-file
+  FileInGitToDeploy="bash/lib/linux/alias.lib.sh";       FolderDest="/private/etc/profile.d"   ; mx-copy-file
+  FileInGitToDeploy="bash/lib/linux/debug.lib.sh";       FolderDest="/private/etc/profile.d"   ; mx-copy-file
+  FileInGitToDeploy="bash/lib/linux/docker.lib.sh";      FolderDest="/private/etc/profile.d"   ; mx-copy-file
+  FileInGitToDeploy="bash/lib/linux/git.lib.sh";         FolderDest="/private/etc/profile.d"   ; mx-copy-file
+  FileInGitToDeploy="env/common/vm.var.common.sh";       FolderDest="/usr/local/etc/vmvar"     ; mx-copy-file
+  FileInGitToDeploy="env/mac/vm.var.specific.sh";        FolderDest="/usr/local/etc/vmvar"     ; mx-copy-file
+done
+
+
+
+# Bep: mx-copy-file is 1 Function.Local.Auxiliary Shoud not appear in Global Env
+unset -f mx-copy-file

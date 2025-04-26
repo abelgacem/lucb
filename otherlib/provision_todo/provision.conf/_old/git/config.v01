@@ -1,0 +1,17 @@
+[core]
+	repositoryformatversion = 0
+	filemode          = true
+	bare              = false
+	logallrefupdates  = true
+	ignorecase        = true
+	precomposeunicode = true
+	autocrlf          = input
+[remote "origin"]
+	url               = https://abelgacemooo:MAXlafa1t@github.com/abelgacem/omt.git
+	fetch             = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote            = origin
+	merge             = refs/heads/master
+[branch "Dev"]
+	remote            = origin
+	merge             = refs/heads/Dev

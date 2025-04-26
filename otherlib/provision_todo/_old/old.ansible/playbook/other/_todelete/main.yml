@@ -1,0 +1,413 @@
+---
+- hosts: all
+  tasks:
+  - include_role:
+      name: apt-hold
+    when: hold_package 
+  tags: [ always ]
+
+- hosts: all
+  tasks:
+  - include_role:
+      name: vault
+  tags: [ always ]
+
+- hosts: pxe
+  tasks:
+  - include_role:
+      name: pxe
+      tasks_from: 01-install
+  tags: [ pxe ]
+
+- hosts: hypervisor
+  roles:
+  - role: hypervisor
+  tags: [ kvm ]
+
+- hosts: mongod
+  tasks:
+  - include_role:
+      name: mongod
+      tasks_from: 01-install
+  tags: [ mongod ]
+
+- hosts: nagios
+  roles:
+    - role: nagios
+  tags: [ nagios ]
+
+- hosts: redis
+  tasks:
+  - include_role:
+      name: redis
+      tasks_from: 01-install
+  - include_role:
+      name: keepalived
+      tasks_from: 01-install
+  tags: [ redis ]
+
+- hosts: postgresql
+  tasks:
+  - include_role:
+      name: postgresql
+      tasks_from: 01-install
+  tags: [ postgresql ]
+
+- hosts: nginx
+  tasks:
+  - include_role:
+      name: nginx-core
+      tasks_from: 01-install
+  tags: [ nginx ]
+
+- hosts: proxy_app
+  tasks:
+  - include_role:
+      name: squid
+      tasks_from: 01-install
+  - include_role:
+      name: keepalived
+      tasks_from: 01-install
+  tags: [ proxy ]
+
+- hosts: proxy_exploitation
+  tasks:
+  - include_role:
+      name: squid
+      tasks_from: 01-install
+  - include_role:
+      name: keepalived
+      tasks_from: 01-install
+  tags: [ proxy ]
+
+- hosts: proxy_rnipp
+  tasks:
+  - include_role:
+      name: haproxy
+      tasks_from: 01-install
+  - include_role:
+      name: keepalived
+      tasks_from: 01-install
+  - include_role:
+      name: snmp
+      tasks_from: 01-install
+  tags: [ proxy_rnipp ]
+
+- hosts: nodejs
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: fcapp
+  tags: [ nodejs ]
+
+- hosts: nodejs
+  tasks:
+  - include_role:
+      name: filebeat
+      tasks_from: 01-install
+    vars:
+      install_task: true
+  tags: [ filebeat ]
+
+- hosts: all
+  serial: 50%
+  vars:
+    install_task: true
+  tasks:
+    - include_role:
+        name: auditbeat
+        tasks_from: 01-install
+      when: "'pa4' in ENV_SHORTCUT"
+  tags: [ auditbeat ]
+
+- hosts: metricbeat
+  vars:
+    install_task: true
+  tasks:
+    - include_role:
+        name: metricbeat
+        tasks_from: 01-install
+  tags: [ metricbeat ]
+
+- hosts: fc_web
+  tasks:
+  - include_role:
+      name: filebeat
+      tasks_from: 01-install
+  tags: [ filebeat ]
+
+- hosts: bastion
+  tasks:
+  - include_role:
+      name: bastion
+
+- hosts: nextcloud
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: nextcloud
+  - include_role:
+      name: nextcloud
+  tags: [ nextcloud ]
+
+- hosts: exploitation_logs
+  tasks:
+  - include_role:
+      name: kibana
+      tasks_from: 01-install
+    vars:
+      docker_user: kibana
+  tags: [ kibana ]
+
+- hosts: rp_elasticsearch_business
+  tasks:
+  - include_role:
+      name: haproxy
+      tasks_from: 01-install
+  - include_role:
+      name: keepalived
+      tasks_from: 01-install
+    when: install_keepalived | bool
+  - include_role:
+      name: snmp
+      tasks_from: 01-install
+    when: install_keepalived | bool
+  tags: [ rp_elasticsearch_business ]
+
+- hosts: elasticsearch_business
+  tasks:
+  - include_role:
+      name: elasticsearch
+      tasks_from: 01-install
+    vars:
+      install_task: true
+  tags: [ elasticsearch_business ]
+
+- hosts: elasticsearch_tech
+  tasks:
+  - include_role:
+      name: elasticsearch
+      tasks_from: 01-install
+    vars:
+      install_task: true
+  tags: [ elasticsearch_tech ]
+
+- hosts: logstash_business
+  tasks:
+  - include_role:
+      name: logstash
+      tasks_from: 01-install
+    vars:
+      install_task: true
+  tags: [ logstash_business ]
+
+- hosts: logstash_tech
+  tasks:
+  - include_role:
+      name: logstash
+      tasks_from: 01-install
+    vars:
+      install_task: true
+  tags: [ logstash_tech ]
+
+- hosts: sanctuaire
+  tasks:
+  - include_role:
+      name: logstash
+      tasks_from: 01-install
+    vars:
+      install_task: true
+  tags: [ sanctuaire ]
+
+- hosts: ntp
+  tasks:
+  - include_role:
+      name: ntp
+      tasks_from: 01-install
+  tags: [ ntp ]
+
+- hosts: dns
+  tasks:
+  - include_role:
+      name: keepalived
+      tasks_from: 01-install
+  - include_role:
+      name: dns
+      tasks_from: 01-install
+  tags: [ dns ]
+
+- hosts: smtp
+  tasks:
+  - include_role:
+      name: rsyslog
+      tasks_from: 01-install
+  - include_role:
+      name: smtp
+      tasks_from: 01-install
+  - include_role:
+      name: keepalived
+      tasks_from: 01-install
+  tags: [ smtp ]
+
+- hosts: lb
+  tasks:
+  - include_role:
+      name: lvs
+      tasks_from: 01-install
+  - include_role:
+      name: snmp
+      tasks_from: 01-install
+  tags: [ lvs ]
+
+- hosts: gitlab
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: gitlab
+  - include_role:
+      name: gitlab
+      tasks_from: 01-install
+  tags: [ gitlab ]
+
+- hosts: gitlab-runner
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: gitlab-runner
+  - include_role:
+      name: gitlab-runner
+      tasks_from: 01-install
+  tags: [ gitlab-runner ]
+
+- hosts: sanctuaire
+  tasks:
+  - include_role:
+      name: auditd
+      tasks_from: 01-install-collector
+    when: "'pa4' in ENV_SHORTCUT"
+  tags: [ sanctuaire ]
+
+- hosts: all:!sanctuaire
+  tasks:
+  - include_role:
+      name: auditd
+      tasks_from: 01-install-client
+    when: "'pa4' in ENV_SHORTCUT"
+  tags: [ auditd ]
+
+- hosts: tools-rp
+  tasks:
+  - include_role:
+      name: simpleproxy
+      tasks_from: 01-install
+  tags: [ simpleproxy-tools ]
+
+- hosts: mx
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: mx
+  - include_role:
+      name: mx
+  tags: [ mx ]
+
+- hosts: otrs
+  tasks:
+  - include_role:
+      name: otrs
+  tags: [ otrs ]
+
+- hosts: usagers
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: fcapp
+  tags: [ usagers ]
+
+- hosts: matomo
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: matomo
+  - include_role:
+      name: matomo
+      tasks_from: 01-install
+  tags: [ matomo ]
+
+- hosts: mattermost
+  tasks:
+  - include_role:
+      name: mattermost
+      tasks_from: 01-install
+  tags: [ mattermost ]
+
+- hosts: csmr_hsm
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: csmr-hsm
+  tags: [ csmr-hsm ]
+
+- hosts: broker
+  serial: 1
+  tasks:
+  - include_role:
+      name: broker
+      tasks_from: 01-install
+  tags: [ broker ]
+
+- hosts: hsm
+  serial: 1
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: hsm
+  tags: [ hsm ]
+
+- hosts: integ-fca-app
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: fca
+  - include_role:
+      name: deploy-fca
+      tasks_from: 01-install
+  tags: [ fca ]
+
+- hosts: eidas_fr
+  serial: 1
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: eidas
+  tags: [ eidas ]
+
+- hosts: eidas_be
+  serial: 1
+  tasks:
+  - include_role:
+      name: docker
+    vars:
+      docker_user: eidas
+  tags: [ eidas ]
+
+- hosts: eidas_rp
+  tasks:
+  - include_role:
+      name: nginx-core
+      tasks_from: 01-install
+  - include_role:
+      name: keepalived
+      tasks_from: 01-install
+  tags: [ eidas ]

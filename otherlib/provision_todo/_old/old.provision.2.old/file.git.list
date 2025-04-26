@@ -1,0 +1,24 @@
+
+#/Users/max/Documents/NotInCloud/Dev/ssh/sshkeygithubpersonal to o3c: /tmp/
+# Provision > File.Git 
+# Branch   Repo   FileSrc   Dst
+main   : provision    : shell/provision.base/provision.local.sh  : /tmp
+main   : provision    : shell/provision.base/provision.remote.sh : /tmp
+main   : provision    : shell/provision.base/provision.env.sh    : /tmp
+main   : provision    : shell/provision.base/file.git.list       : /tmp
+main   : provision    : shell/provision.base/file.list           : /tmp
+main   : code         : lib/bash/alias.lib.centos.sh             : /tmp
+main   : code         : lib/bash/git.lib.sh                      : /tmp
+main   : code         : lib/bash/git.env.sh                      : /tmp
+main   : code         : lib/bash/copy.lib.sh                     : /tmp
+main   : code         : lib/bash/user.lib.sh                     : /tmp
+main   : conf         : ssh/ssh_config_ovh                       : /tmp
+maon   : conf         : ssh/sshkeyovh.pub                        : /tmp
+
+# Branch   Repo   FileSrc   Dst
+main   : provision    : shell/provision.base/file.git.list       : /tmp
+main   : code         : lib/bash/alias.lib.centos.sh             : /tmp
+main   : code         : lib/bash/git.lib.sh                      : /tmp
+main   : code         : lib/bash/git.env.sh                      : /tmp
+main   : code         : lib/bash/copy.lib.sh                     : /tmp
+main   : code         : lib/bash/user.lib.sh                     : /tmp

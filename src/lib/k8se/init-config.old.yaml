@@ -1,0 +1,23 @@
+# /tmp/config.yaml
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+nodeRegistration:
+  kubeletExtraArgs:
+    fail-swap-on: "false"           # Tolerate swap
+    container-runtime: "remote"     # Use CRI-O
+    container-runtime-endpoint: "unix:///var/run/crio/crio.sock"
+    cgroup-driver: "systemd"        # Must match CRI-O's cgroup driver
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+kubernetesVersion: 1.28.0           # Specify your version
+networking:
+  podSubnet: "10.244.0.0/16"       # Required for Flannel
+controllerManager:
+  extraArgs:
+    node-monitor-grace-period: "40s"
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+failSwapOn: false                   # Cluster-wide swap tolerance
+cgroupDriver: systemd               # Must match CRI-O

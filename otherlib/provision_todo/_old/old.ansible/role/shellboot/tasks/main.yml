@@ -1,0 +1,38 @@
+---
+- name: Configure Shell:Boot
+  block:
+    - name: Save > file > before > update (Custom Timestamp) > IF > file > exist
+      copy:
+        src: "{{ item }}"
+        dest: "{{ item }}.{{rvTimestamp}}.bak"
+        remote_src: yes
+      ignore_errors: yes  
+      with_items: "{{ ivList.file.shellboot }}"
+        
+    - name: Id > File (BOF) > IF > file > exist
+      lineinfile:
+        path: "{{ item.path }}"
+        insertbefore: BOF
+        line: "{{ item.line   }}"
+      ignore_errors: yes  
+      with_items:
+        - { path: '{{ ivFile.shellboot.etcprofile }}', line: '# ## /etc/profile'      }  
+        - { path: '{{ ivFile.shellboot.skelbashrc }}', line: '# ## /etc/skel/.bashrc' }      
+        - { path: '{{ ivFile.shellboot.etcbashrc }}',  line: '# ## /etc/bash.bashrc'  }      
+    
+    - name: Update > File (Previously Ided) > IF > file > exist
+      lineinfile:
+        path: "{{ item.path }}"
+        insertafter: "{{ item.regexp }}"
+        line:   "{{ item.line   }}"
+      ignore_errors: yes  
+      with_items:
+        - { path: '{{ ivFile.shellboot.etcprofile }}', regexp: '# ## /etc/profile',      line: 'source {{ ivFolder.vmvar }}/{{ ivFile.vmvar.specific }}'}  
+        - { path: '{{ ivFile.shellboot.etcprofile }}', regexp: '# ## /etc/profile',      line: 'source {{ ivFolder.vmvar }}/{{ ivFile.vmvar.common }}'  }  
+        - { path: '{{ ivFile.shellboot.skelbashrc }}', regexp: '# ## /etc/skel/.bashrc', line: 'source {{ ivFolder.vmvar }}/{{ ivFile.vmvar.specific }}'}  
+        - { path: '{{ ivFile.shellboot.skelbashrc }}', regexp: '# ## /etc/skel/.bashrc', line: 'source {{ ivFolder.vmvar }}/{{ ivFile.vmvar.common }}'  }  
+        - { path: '{{ ivFile.shellboot.etcbashrc }}' , regexp: '# ## /etc/bash.bashrc',  line: 'source {{ ivFolder.vmvar }}/{{ ivFile.vmvar.specific }}'}  
+        - { path: '{{ ivFile.shellboot.etcbashrc }}' , regexp: '# ## /etc/bash.bashrc',  line: 'source {{ ivFolder.vmvar }}/{{ ivFile.vmvar.common }}'  }  
+
+# Todo
+## Solve - When file start with Shebang (#!/bin/bash)

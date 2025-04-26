@@ -1,0 +1,31 @@
+---
+- hosts: all
+  tasks:
+  - include_role:
+      name: profiled
+  tags: [ always ]
+
+# - hosts: mongod
+#   tasks:
+#   - include_role:
+#       name: mongod
+#       tasks_from: 01-install
+#   tags: [ mongod ]
+
+
+---
+- name:  Pb to test play
+  hosts: o1d
+  gather_facts: no
+  vars:
+    - timestamp: "{{ lookup('pipe','date +%Y-%m-%d') }}"
+    # - fqdn: "fsp7v12.integ.dev-franceconnect.fr"
+    - appname: "fsp3v2-pp"
+    - env_filename: "{{ appname | regex_replace('fsp.','fsp') | regex_replace('-.*')}}.j2"
+    # - FspId: "{{ fqdn.split('.')[0] }}"
+    # - FspEnv: "{{ fqdn.split('.')[1] }}"
+    # - AppCore: "{{ fqdn.split('.')[0] | regex_replace('fsp.') }}"
+    # - FspOther: "{{ appname | regex_replace('*-')}}"
+  tasks:
+    - include_role: 
+        name: _test

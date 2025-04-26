@@ -1,0 +1,7 @@
+---
+- name: Display MxName01
+  debug: 
+    msg: "{{ MxName01 }}"
+- name: Display MxName02
+  debug: 
+    msg: "{{ MxName02 }}"

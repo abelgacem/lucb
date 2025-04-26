@@ -1,0 +1,209 @@
+# Re-use Connection => Faster => ssh multiplexing
+
+Host *
+  # Speed up connection
+  ControlMaster   auto
+  ControlPath    /tmp/%r@%h:%p
+  ControlPersist 10m  
+  # Speed up connection
+  PreferredAuthentications publickey
+
+################### Vm.Ovh.Vps.01
+# Host o1r
+#   HostName 51.210.10.195
+#   StrictHostKeyChecking no
+#   User root 
+#   Port 22
+#   IdentityFile ~/.ssh/sshkeyovh
+
+ Host o1m
+  HostName 51.210.10.195
+  StrictHostKeyChecking no
+  User mxadmin
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+ Host o1u 
+  HostName 51.210.10.195
+  StrictHostKeyChecking no
+  User ubuntu
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o1c
+  HostName 51.210.10.195
+  StrictHostKeyChecking no
+  User centos
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o1d
+  HostName 51.210.10.195
+  StrictHostKeyChecking no
+  User debian
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+#################### Vm.Ovh.Vps.02
+# Host o2r
+#   HostName 51.77.213.243
+#   StrictHostKeyChecking no
+#   User root
+#   Port 22
+#   IdentityFile ~/.ssh/sshkeyovh
+
+Host o2m
+  HostName 51.77.213.243
+  StrictHostKeyChecking no
+  User mxadmin
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o2v
+  HostName 51.77.213.243
+  StrictHostKeyChecking no
+  User ubuntu
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o2u
+  HostName 51.77.213.243
+  StrictHostKeyChecking no
+  User ubuntu
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o2c
+  HostName 51.77.213.243
+  StrictHostKeyChecking no
+  User centos
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o2d
+  HostName 51.77.213.243
+  StrictHostKeyChecking no
+  User debian
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+#################### Vm.Ovh.Vps.03
+Host o3m
+  HostName 92.222.22.21
+  StrictHostKeyChecking no
+  User ubuntu
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o3v
+  HostName 92.222.22.21
+  StrictHostKeyChecking no
+  User ubuntu
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o3u
+  HostName 92.222.22.21
+  StrictHostKeyChecking no
+  User ubuntu
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o3c
+  HostName 92.222.22.21
+  StrictHostKeyChecking no
+  User centos
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o3d
+  HostName 92.222.22.21
+  StrictHostKeyChecking no
+  User debian
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+# Test  > access > ssh -T mxgithub / ssh -vT mxgithub
+# Clone > git clone https://githubpub/abelgacem/omt.git (no sshkey needed)
+# Clone > git clone ssh://git@githubpub/abelgacem/omt.git (ssh key needed)
+# git clone https://github.com/france-connect/service-provider-example.git
+# git clone ssh://githubpub/france-connect/service-prov@ider-example.git
+# git clone ssh://githubpub/abelgacem/omt.git
+
+#################### Github
+Host githubpub
+  StrictHostKeyChecking no
+  Preferredauthentications publickey
+  IdentityFile ~/.ssh/sshkeygithubpersonal
+  HostName github.com
+  User git
+
+# ssh -T -o StrictHostKeyChecking=no githubfc
+Host githubfc
+  StrictHostKeyChecking no
+  Preferredauthentications publickey
+  IdentityFile ~/.ssh/sshkeygithubfc
+  HostName gitlab.dev-franceconnect.fr
+  Port 2222
+  User git
+
+#Host githubpub
+  #Preferredauthentications publickey
+  #IdentityFile ~/.ssh/sshkeygithubfc
+ # HostName github.com
+  #Port 2222
+  # HostName git@gitlab.dev-franceconnect.fr
+  #User git
+
+#################### PORT FORWARDING ####################
+
+LocalForward 8080 51.77.210.73:80
+#LocalForward 8080 51.77.213.243:80
+
+
+
+#################### TODO ####################
+Host raspi
+  HostName 192.168.0.30
+  StrictHostKeyChecking no
+  User pi
+  Port 22
+
+
+# Vps.XX User.Root, Port.Secure 
+Host ovhroot
+  HostName 51.77.210.73
+  StrictHostKeyChecking no
+  User root
+  Port 20001
+  IdentityFile ~/.ssh/id_rsa
+
+
+################### Vm.Ovh.Vps.01
+Host o4r
+  HostName 51.77.210.73
+  StrictHostKeyChecking no
+  User root
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+ Host o4u
+  HostName 51.77.210.73
+  StrictHostKeyChecking no
+  User ubuntu
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o4c
+  HostName 51.77.210.73
+  StrictHostKeyChecking no
+  User centos
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh
+
+Host o4d
+  HostName 51.77.210.73
+  StrictHostKeyChecking no
+  User debian
+  Port 22
+  IdentityFile ~/.ssh/sshkeyovh

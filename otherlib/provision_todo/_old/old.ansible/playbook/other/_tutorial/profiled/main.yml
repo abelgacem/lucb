@@ -1,0 +1,35 @@
+---
+- name:  Pb to test play
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - var.yml
+  tasks:
+    - name: Provision > Folder
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items: "{{ list_folder }}"  
+
+    - name: Provision > File.Common > Vmvar
+      copy:
+        src:  "{{ item }}"
+        dest: "{{ folder.vmvar }}"
+      with_items:
+       - "{{ file.vmvar.common   }}"
+       - "{{ file.vmvar.specific }}"
+
+    - name: Provision > File.Common > /etc/profiled
+      copy:
+        src:  "{{ item }}"
+        dest: "{{ folder.profiled }}"
+      with_items: "{{ file.profiled }}"
+
+    - name: Update > File > /etc/ssh/sshd_config > to > allow > Connection
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line:   "{{ item.line   }}"
+      with_items:
+        - { regexp: '#TCPKeepAlive yes', line: 'TCPKeepAlive yes'}  
+        - { regexp: '#ClientAliveInterval 0', line: 'ClientAliveInterval 30'}  

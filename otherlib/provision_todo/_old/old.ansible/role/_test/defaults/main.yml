@@ -1,0 +1,3 @@
+---
+MxName01: "fsp3v2-pp"
+MxName02: "{{ MxName01 | regex_replace('fsp.','fsp') | regex_replace('-.*')}}.j12"

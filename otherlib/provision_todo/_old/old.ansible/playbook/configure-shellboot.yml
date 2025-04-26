@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+  - include_role:
+      name: shellboot
+    vars:
+      ivFolder: "{{ folder }}"
+      ivFile: "{{ file }}"
+      ivList: "{{ list }}"
+  tags: [ always ]

@@ -1,0 +1,33 @@
+---
+- name:  Pb to test play
+  hosts: all
+  gather_facts: no
+  vars:
+    - timestamp: "{{ lookup('pipe','date +%Y-%m-%d') }}"
+  vars_files:
+    - var.yml
+  tasks:
+    - name: Save > file > /etc/ssh/sshd_config > before > update
+      copy:
+        src: /etc/ssh/sshd_config
+        dest: /etc/ssh/sshd_config.{{timestamp}}.bak
+        remote_src: yes 
+    - name: Update > File > /etc/ssh/sshd_config > to > allow > Connection
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line:   "{{ item.line   }}"
+      with_items:
+        - { regexp: '#TCPKeepAlive yes', line: 'TCPKeepAlive yes'}  
+        - { regexp: '#ClientAliveInterval 0', line: 'ClientAliveInterval 30'}  
+      notify:
+      - Restart Sshd
+
+### Handlers that are triggered via instruction notify      
+  handlers:
+  - name: Restart Sshd
+    ignore_errors: yes
+    service:
+      name: sshd
+      state: restarted
+    listen: Reload or Restart Service

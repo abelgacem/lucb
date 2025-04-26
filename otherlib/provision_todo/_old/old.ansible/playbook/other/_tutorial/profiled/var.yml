@@ -1,0 +1,24 @@
+---
+folder:
+  vmvar:    /usr/local/etc/vmvar
+  repogit:  /usr/local/etc/repogit
+  profiled: /etc/profile.d
+  git:
+    bash:  bash/lib
+    conf:  conf
+    env:   env
+
+file:
+  profiled:
+    - "{{ folder.repogit }}/abtit/{{ folder.gitbash }}/alias.lib.sh"
+    - "{{ folder.repogit }}/abtit/{{ folder.gitbash }}/git.lib.sh"
+    - "{{ folder.repogit }}/abtit/{{ folder.gitbash }}/vm.lib.sh"
+  vmvar:
+    specific: vm.var.specific.sh
+    common:   vm.var.common.sh
+
+
+list_folder:
+  - "{{ folder.vmvar }}"
+  - "{{ folder.repogit }}"
+  

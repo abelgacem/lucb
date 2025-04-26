@@ -1,0 +1,16 @@
+#!/bin/bash
+
+## ####################### CAUTION CAUTION ####
+## When This file is update
+## Copy it manually to  .git/hooks/
+## ####################### CAUTION CAUTION ####
+
+# ListFileGitKnow=$(git status --short | awk '{print $2}')
+ListFileGitKnow=$(git status --short)
+
+# Send List.File.GitKnow to Script.Bash
+
+FolderDeployAuto="/Users/Max/Documents/MxRoot/MacRepo/GitRepo/omt/trigger/deploy"
+#${FolderDeployAuto}/pre_commit_profile "${ListFileGitKnow}"
+#${FolderDeployAuto}/pre_commit_conf    "${ListFileGitKnow}"
+# ${FolderDeployAuto}/pre-commit-dockerfile "${ListFileGitKnow}"

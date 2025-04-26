@@ -1,0 +1,10 @@
+[accesslog]
+[api]
+  insecure=true
+  dashboard=true 
+  debug=true 
+[log]
+  level="INFO"
+[entrypoints]
+ [entrypoints.mxweb]
+    address=":80"

@@ -1,0 +1,22 @@
+---
+- name: Provision > (Var, Method).Global
+  block:
+  - name: Provision.Create > Folder
+    file:
+      path: "{{ item }}"
+      state: directory
+    with_items: "{{ ivList.folder.global }}"  
+
+  - name: Provision.Copyfile > Folder:{{ ivFolder.vmvar }}
+    copy:
+      src:  "{{ item }}"
+      dest: "{{ ivFolder.vmvar }}"
+    with_items:
+      - "{{ ivFile.vmvar.common   }}"
+      - "{{ ivFile.vmvar.specific }}"
+
+  - name: Provision.Copyfile > Folder:{{ ivFolder.profiled }}
+    copy:
+      src:  "{{ item }}"
+      dest: "{{ ivFolder.profiled }}"
+    with_items: "{{ rvList.profiled }}"

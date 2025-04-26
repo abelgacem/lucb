@@ -1,0 +1,22 @@
+[alias]
+	# display status
+	mxdst = status --short
+	# display stagged file
+	mxdsf = diff --name-only --cached
+	# display last commit
+	mxdlc = log -2  --pretty=format:'%h - %an, %ar : %s'
+	# commit with no commit msg
+	mxcnm = commit -m 'SC'
+	# Open External tool with git
+	mxcode =  !code
+
+[color]
+	ui = true
+	status = auto
+	branch = auto
+[user]
+	email = abelgacem
+	name  = abelgacem
+[commit]
+	#template = /Users/Max/.gitmessage
+	#template = 'SC'

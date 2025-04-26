@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "../../topic"
+		},
+		{
+			"path": "../../docker"
+		},
+		{
+			"path": "../../poetry"
+		},
+		{
+			"path": "../../project"
+		},
+		{
+			"path": "../../code"
+		},
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../dockerfile"
+		}
+	],
+	"settings": {}
+}

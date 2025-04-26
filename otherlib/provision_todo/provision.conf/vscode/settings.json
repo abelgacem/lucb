@@ -1,0 +1,27 @@
+{
+    "files.associations": {
+        "dockerfile*": "dockerfile"
+    },
+    "editor.largeFileOptimizations": false,
+    "workbench.colorTheme": "Visual Studio Light",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "python.pythonPath": "python3",
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "python.insidersChannel": "daily",
+    "jupyter.alwaysTrustNotebooks": true,
+    "timeline.excludeSources": [
+        "git-history"
+    ],
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "security.workspace.trust.untrustedFiles": "open",
+    "python.defaultInterpreterPath": "python3",
+    "editor.rulers": [
+    
+    ]
+}

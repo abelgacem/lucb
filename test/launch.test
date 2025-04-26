@@ -1,0 +1,54 @@
+#!/bin/bash
+
+
+# Set the base directory for tests
+sTESTS_DIR="/home/ubuntu/wkspc/git/luc-bash/test/list"
+
+####### METHOD #######
+
+# purpose: 
+# - run prerequisites tests in a specific order
+# - return 1 if any test failed else return 0
+run_prerequisites() {
+  local lRETVAL=0
+  bats $sTESTS_DIR_prerequisite/bash.bats; [ "$?" -ne 0 ] && lRETVAL=1
+  bats $sTESTS_DIR_prerequisite/bats.bats; [ "$?" -ne 0 ] && lRETVAL=1
+  return $lRETVAL
+}
+
+# purpose: run application tests in a specific order ()
+run_tests() {
+  bats $sTESTS_DIRluc/core.bats
+  bats $sTESTS_DIRluc/object.bats
+  bats $sTESTS_DIRluc/os.package.bats
+  bats $sTESTS_DIRluc/os.user.bats
+
+  # bats $sTESTS_DIRcil/image.display.bats
+  # bats $sTESTS_DIRtest/mx.1.bats
+  # bats $sTESTS_DIRtest/mx.2.bats
+}
+# purpose: run all test prerequsisites and exit at the end if at least one test failed
+runorexit_prerequisites() {
+  run_prerequisites
+  [ "$?" -eq 0 ] && {
+    echo -e "\033[32mPrerequisites for testing the app are met. Continue testing the application\033[0m" 
+    return 0
+  } || {
+    echo -e "\033[1;31mPrerequisites to continue the test are not met\033[0m" 
+    exit 1
+  }
+}
+
+
+####### MAIN #######
+
+# checkorexit prerequisites are met
+runorexit_prerequisites 
+
+# # continue
+run_tests
+
+# run_prerequisites && echo -e "\033[32mPrerequisites for testing the app are met. Continue testing the application\033[0m" || {
+#   echo -e "\033[1;31mPrerequisites to continue the test are not met\033[0m" 
+#   exit 1
+# }

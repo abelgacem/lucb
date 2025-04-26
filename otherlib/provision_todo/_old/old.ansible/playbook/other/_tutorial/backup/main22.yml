@@ -1,0 +1,24 @@
+---
+- name:  Pb to test play
+  hosts: o2d
+  gather_facts: no
+  vars:
+    - timestamp: "{{ lookup('pipe','date +%Y-%m-%d') }}"
+    - appname: "fsp1v1-pp"
+    # - filename: "{{ appname | regex_replace('fsp.','fsp') | regex_replace('-.*')}}.j2"
+  tasks:
+    # - name: Save file /etc/sudoers before update
+    #   copy:
+    #     src: /etc/sudoers
+    #     dest: /etc/sudoers.{{timestamp}}.bak
+    #     remote_src: yes 
+    - name: define var 
+      vars: 
+        filename: "{{ appname | regex_replace('fsp.','fsp') | regex_replace('-.*')}}.j2"
+    - name: Display var 
+      debug: 
+        msg: "Var is {{ appname | regex_replace('fsp.','fsp') | regex_replace('-.*')}}"
+    - name: Copy template 
+      template: 
+        src: "{{ filename }}"
+        dest: /tmp/

@@ -1,0 +1,50 @@
+---
+- name:  Pb to test play
+  hosts: o1d
+  gather_facts: no
+  vars:
+    - timestamp: "{{ lookup('pipe','date +%Y-%m-%d') }}"
+  vars_files:
+    - var.yml
+  tasks:
+    - name: Install Key.Pub:Fingerprint 
+      apt_key:
+        url:   "{{ mongodb.keypub_url }}"
+        state: present
+    - name: Install Repo.Apt
+      apt_repository:
+        repo:     "{{ mongodb.repo_apt }}"
+        state:    present
+        filename: mongodb-enterprise-4.2.list
+    - name: Get List Package - apt-get update
+      apt: 
+        update_cache: yes
+        force_apt_get: yes
+    - name: Install Mongodb
+      apt:
+        name: "{{ list_package }}"
+        state: present
+        force_apt_get: yes
+        force: yes
+      vars:
+        list_package:
+          - "mongodb-enterprise={{ mongodb.version }}"
+          - "mongodb-enterprise-server={{ mongodb.version }}"
+          - "mongodb-enterprise-shell={{ mongodb.version }}"
+          - "mongodb-enterprise-mongos={{ mongodb.version }}"
+          - "mongodb-enterprise-tools={{ mongodb.version }}"
+    - name: Install File.Conf
+      copy:
+        src: mongod.conf
+        dest: /etc/mongod.conf
+      notify: Restart Mongodb
+
+### Handlers that are triggered via instruction notify      
+  handlers:
+  - name: Restart Mongodb
+    systemd:
+      name: mongod
+      daemon_reload: yes
+      state: restarted
+      enabled: yes
+    

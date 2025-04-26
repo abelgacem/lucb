@@ -1,0 +1,40 @@
+---
+- name: Display MxName03
+  debug: 
+    msg: "{{ MxName03 }}"
+- name: Display MxName04
+  debug: 
+    msg: "{{ MxName04 }}"
+
+- name: Display Image to use {{ fsp_image_id }}
+  debug: 
+    msg: "{{ fsp_image_id }}"
+
+- name: Display MxName01
+  debug: 
+    msg: "{{ MxName01 }}"
+
+- name: Display MxName02
+  debug: 
+    msg: "{{ MxName02 }}"
+
+
+- name: Display Lenght of {{ Fqdn }}
+  debug: 
+    msg: "{{ MxNbDot }}"
+
+- name: Display FspIdxx
+  debug: 
+    msg: "{{ FspId }}"
+
+- name: Display Domain
+  debug: 
+    msg: "{{ FspDomain }}"
+
+- name: Display Env
+  debug: 
+    msg: "{{ FspEnv }}"
+
+- name: Display App Name
+  debug: 
+    msg: "{{ FspAppName }}"

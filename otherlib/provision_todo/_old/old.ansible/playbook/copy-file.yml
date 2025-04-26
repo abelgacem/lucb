@@ -1,0 +1,8 @@
+---
+- hosts: all
+  tasks:
+- name: Provision > Folder:{{ folder.profiled }}
+  copy:
+    src:  /tmp/vm.var.common.sh
+    dest: "{{ folder.profiled }}"
+  

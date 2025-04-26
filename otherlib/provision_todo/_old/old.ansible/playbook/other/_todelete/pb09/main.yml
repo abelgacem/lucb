@@ -1,0 +1,21 @@
+---
+- name:  Pb to test play
+  hosts: ovhroot
+  gather_facts: no
+  tasks:
+    - name: Update file /etc/sudoers - Grant Group.Wheel Sudo with no Pwd
+      replace:
+        path: /etc/sudoers
+        regexp: '# %wheel'
+        replace: '%wheel'
+    - name: Wget Yum.Repository.Docker
+      get_url:
+        url: {{UrlYumRepositoryDocker}}
+        dest: /etc/yum.repos.d/
+    - name: Install Package
+      yum:
+        name: "{{Package}}"
+        state: present
+      vars:
+        package:
+          - tree

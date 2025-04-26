@@ -1,0 +1,36 @@
+---
+# Folder:(Path,Name)
+folder:
+  vmvar:    /usr/local/etc/vmvar
+  repogit:  /usr/local/etc/git
+  profiled: /etc/profile.d
+
+# File:(Name,Path)
+file:
+  vmmethod:
+    specific: vm.meth.specific.sh
+    common:   vm.meth.common.sh
+  vmvar:
+    specific: vm.var.specific.sh
+    common:   vm.var.common.sh
+  shellboot:
+    etcprofile: /etc/profile
+    skelbashrc: /etc/skel/.bashrc
+    etcbashrc:  /etc/bash.bashrc 
+      
+
+# List
+list:
+  folder:
+    global:
+      - "{{ folder.vmvar }}"
+      - "{{ folder.repogit }}"
+      - "{{ folder.profiled }}"
+  file:
+    shellboot:
+      - "{{ file.shellboot.etcprofile }}"
+      - "{{ file.shellboot.skelbashrc }}"
+      - "{{ file.shellboot.etcbashrc }}"
+    vmvar:
+      - "{{ file.vmvar.specific }}"  
+      - "{{ file.vmvar.common }}"  

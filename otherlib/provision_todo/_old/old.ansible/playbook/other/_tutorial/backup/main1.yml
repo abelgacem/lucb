@@ -1,0 +1,8 @@
+---
+- name: Display var 
+  debug: 
+    msg: "Var is {{ appname | regex_replace('fsp.','fsp') | regex_replace('-.*')}}"
+# - name: Copy template 
+#   template: 
+#     src: "{{ filename }}"
+#     dest: /tmp/

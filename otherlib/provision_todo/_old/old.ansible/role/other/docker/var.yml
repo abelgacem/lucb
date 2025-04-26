@@ -1,0 +1,5 @@
+---
+mongodb:
+  keypub_url: https://www.mongodb.org/static/pgp/server-4.2.asc
+  repo_apt: deb http://repo.mongodb.com/apt/debian buster/mongodb-enterprise/4.2 main
+  version:  4.2.12

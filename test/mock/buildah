@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# Simulate `buildah images` command
+if [[ "$1" == "images" && -z "$2" ]]; then
+  cat <<EOF
+REPOSITORY                     TAG      IMAGE ID       CREATED         SIZE
+docker.io/library/ubuntu       25.04    3912a92804ab   2 weeks ago     83.9 MB
+docker.io/library/almalinux    9.5      80c04158e975   3 weeks ago     217 MB
+docker.io/library/alpine       3.20.3   63b790fccc90   3 months ago    8.09 MB
+docker.io/library/rockylinux   9.3      9cc24f05f309   12 months ago   181 MB
+EOF
+  exit 0
+fi
+
+# Simulate `buildah images --format` command
+if [[ "$2" == "--format" ]]; then
+  cat <<EOF
+3912a92804ab
+EOF
+  exit 0
+fi
+
+
+# Unknown command handling
+echo "Unknown buildah command"
+exit 1

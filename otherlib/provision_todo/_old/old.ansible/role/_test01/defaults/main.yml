@@ -1,0 +1,19 @@
+---
+MxName03: "fsp3v2222-integos"
+MxName04: "{{ MxName03 | regex_replace('fsp.','fsp') | regex_replace('-.*')}}.j12"
+Fqdn01:   fsp1v2.integ01.dev-franceconnect.fr
+Fqdn02:   fsp1v2.pp.dev-franceconnect.fr
+Fqdn03:   fsp1v2.dev-franceconnect.fr
+Fqdn:     "{{ Fqdn03 }}"
+fc_registry:  "gitlab.dev-franceconnect.fr:5005"
+fsp1v1_image: "{{ fc_registry }}/france-connect/infra/mock-v1"
+fsp1v2_image: "{{ fc_registry }}/france-connect/infra/mock-high"
+fsp_id: "fsp1v2"
+# fsp_image_id: "{{ vars[fsp_id+'_image'] }}"
+fsp_image_id: "{{ lookup('vars',fsp_id + '_image') }}"
+
+FspId:    "{{ Fqdn.split('.')[0] }}"
+MxNbDot:  "{{ Fqdn.split('.') | length -1 }}"
+FspDomain: "{{ (MxNbDot == '3') | ternary(Fqdn.split('.')[1], '') }}"
+FspEnv:    "{{ FspDomain | regex_replace('[01]') }}"
+FspAppName: "{{ (FspEnv == '' ) | ternary(FspId, FspId+'-'+FspEnv ) }}"

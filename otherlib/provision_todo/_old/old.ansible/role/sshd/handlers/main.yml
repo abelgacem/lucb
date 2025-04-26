@@ -1,0 +1,19 @@
+---
+### Handlers that are triggered via instruction notify      
+# - name: Start Auditd
+#   systemd:
+#     name: auditd
+#     state: started
+#     enabled: yes
+
+# - name: Restart Auditd
+#   systemd:
+#     name: auditd
+#     state: restarted
+
+- name: Restart Sshd
+  ignore_errors: yes
+  service:
+    name: sshd
+    state: restarted
+  listen: Reload or Restart Service

@@ -1,0 +1,91 @@
+# Purpose : make some libraries's functions available when sourcing this script
+
+# define var
+## getorexit this file path
+sLIB_RELPATH='../lib'
+sOS_LIST="alma|alpine|debian|rocky|ubuntu"
+[  -f "/etc/os-release" ] && lDISTRO="$(grep -oiE "$sOS_LIST" /etc/os-release | head -n 1 | tr '[:upper:]' '[:lower:]')" || lDISTRO="mac" 
+case "$lDISTRO" in
+  "alma"|"rocky"|"ubuntu"|"mac"|"debian") lFOLDER_CUR="${BASH_SOURCE[0]}" ;;
+  "alpine") [ -z "$LUCSETUP" ]  && echo -e "\033[1;31mwarn\033[0m > The var LUCSETUP does not exist in the env. Export it." && return 1 || lFOLDER_CUR="$LUCSETUP" ;;
+  *) echo "unregistred distro: $lDISTRO"; return 1 ;;
+esac
+
+
+# define var
+sTHIS_FILE_FOLDER="$(dirname $lFOLDER_CUR)"
+sFOLDER_LIB="$(cd "${sTHIS_FILE_FOLDER}/${sLIB_RELPATH}" && pwd)"
+
+##### debug #####
+echo -e "\033[1;23mdebu\033[0m > LUCSETUP=$LUCSETUP"
+echo -e "\033[1;23mdebu\033[0m > lFOLDER_CUR=$lFOLDER_CUR"
+echo -e "\033[1;23mdebu\033[0m > sFOLDER_LIB=$sFOLDER_LIB"
+##### debug #####
+
+# checkorexit file exists
+[ ! -f "${sFOLDER_LIB}/luc/luc.core.sh" ] && echo -e "\033[1;31mwarn\033[0m > file not found: ${sFOLDER_LIB}/luc/luc.core.sh" && return 1
+
+# unset env
+lECHOVAL=$(compgen 2> /dev/null); lRETVAL=$?
+[ 0 -ne "$lRETVAL" ]  && echo -e "\033[1;33mcaut\033[0m > compgen is not installed. will not unset previous env" || {
+  unset -f $(compgen -A function | grep "^luc_")
+  unset -f $(compgen -A variable | grep "^luc_EV_")
+}
+
+# load needed dependencies
+source ${sFOLDER_LIB}/luc/luc.core.sh
+
+# info
+luc_core_echo "purp" "source files in folder > ${sFOLDER_LIB}"
+
+# list files that will be sourced and exit
+[ "--dry" == "$1" ] && {
+  # define the list of files to source first (ie. files ending with '._env.sh')
+  lLIST_FILES="$(find "${sFOLDER_LIB}" -type f -name '*_env.sh' | sort)"
+  luc_core_echo "debu" "Files that will [potentially] be sourced when sourcing the envfile"
+  luc_core_echo "debu" "Root folder: ${sFOLDER_LIB}"
+  for lFILE in ${lLIST_FILES}; do
+    lLIB_PREFIX=$(basename "$lFILE" | sed 's/._env.sh$//')
+    luc_core_echo "debu" "parent : "    
+    luc_core_echo "debu" "       > Envfile = ${lFILE/${sFOLDER_LIB}\//}"    
+    luc_core_echo "debu" "       > Prefix  = ${lLIB_PREFIX}"    
+    lLIST_LIB="$(find "${sFOLDER_LIB}" -type f -name "${lLIB_PREFIX}*" ! -name "${lLIB_PREFIX}._env.sh" | sort)"
+    luc_core_echo "debu" "       > child :"
+    for lLIB in $lLIST_LIB; do
+      luc_core_echo "debu" "           - ${lLIB_PREFIX} - ${lLIB/${sFOLDER_LIB}\//}"
+    done
+  done
+exit 1
+}
+
+  # display help and exit
+[ "--help" == "$1" ] && { 
+  luc_core_echo "usag" "[source] path/to/srclib [--dry|--help]"
+  luc_core_echo "info" "--dry  : will display files that will be source"
+  luc_core_echo "info" "--help : will display this help "
+  exit 1
+}
+
+# define the list of files to source first (ie. files ending with '._env.sh')
+lLIST_FILES="$(find "${sFOLDER_LIB}" -type f -name '*_env.sh' | sort)"
+# loop thru the files in the list
+for lFILE in ${lLIST_FILES}; do
+  # for each file, get the prefix (ie. the first string before the first dot)
+  lLIB_PREFIX=$(basename "$lFILE" | sed 's/._env.sh$//')
+  # source the file or skip to next
+  .  $lFILE && {
+    luc_core_echo "info" "library : ${lLIB_PREFIX} > loaded."      && 
+    # define the list of files to source then (ie. files staring with '<prefix>.')
+    lLIST_LIB="$(find "${sFOLDER_LIB}" -type f -name "${lLIB_PREFIX}*" ! -name "${lLIB_PREFIX}._env.sh" | sort)"
+    # source each file
+    for lLIB in $lLIST_LIB; do
+      # luc_core_echo "debu" "childo > source ${lLIB_PREFIX} - $lLIB"
+      . $lLIB 
+    done
+  } || {
+    luc_core_echo "warn" "library : ${lLIB_PREFIX} > not loaded"
+  }
+done
+
+unset lLIST_FILES lFILE lLIB_PREFIX lLIB lLIST_LIB lDISTRO lFOLDER_CUR sFOLDER_LIB sTHIS_FILE_FOLDER
+unset sOS_LIST sLIB_RELPATH
